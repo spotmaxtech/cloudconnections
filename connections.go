@@ -51,6 +51,13 @@ func (c *Connections) SetSession(region string) {
 	c.Session = session.Must(session.NewSession(&aws.Config{Region: aws.String(region)}))
 }
 
+// AWS Price List Service API provides the following two endpoints:
+// https://api.pricing.us-east-1.amazonaws.com
+// https://api.pricing.ap-south-1.amazonaws.com
+func (c *Connections) PricingSession() *session.Session {
+	return session.Must(session.NewSession(&aws.Config{Region: aws.String("us-east-1")}))
+}
+
 func (c *Connections) Connect(region string) {
 	if c.Session == nil {
 		c.SetSession(region)
@@ -72,7 +79,7 @@ func (c *Connections) Connect(region string) {
 	go func() { costExplorerConn <- costexplorer.New(c.Session) }()
 	go func() { cloudFormationConn <- cloudformation.New(c.Session) }()
 	go func() { cloudWatchConn <- cloudwatch.New(c.Session) }()
-	go func() { pricingConn <- pricing.New(c.Session) }()
+	go func() { pricingConn <- pricing.New(c.PricingSession()) }()
 
 	c.AutoScaling, c.EC2, c.ELB, c.ELBV2, c.CostExplorer, c.CloudFormation, c.CloudWatch, c.Pricing, c.Region =
 		<-asConn, <-ec2Conn, <-elbConn, <-elbv2Conn, <-costExplorerConn, <-cloudFormationConn, <-cloudWatchConn, <-pricingConn, region
