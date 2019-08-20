@@ -5,6 +5,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sts"
+	"github.com/spotmaxtech/gokit"
+	"log"
 	"time"
 )
 
@@ -15,8 +17,7 @@ type TemporaryCredentialProvider struct {
 }
 
 // Create a temporary credential with provider
-// * duration: timer duration
-// * autoRefresh: enable auto refresh or not
+// * assumeRoleInput: sts.AssumeRoleInput, including duration etc.
 func NewTemporaryCredentials(assumeRoleInput *sts.AssumeRoleInput) *credentials.Credentials {
 	return credentials.NewCredentials(&TemporaryCredentialProvider{
 		assumeRoleInput: assumeRoleInput,
@@ -33,6 +34,7 @@ func (p *TemporaryCredentialProvider) Retrieve() (credentials.Value, error) {
 	}
 
 	p.expiresAt = result.Credentials.Expiration
+	log.Println("credential retrieved:", gokit.Prettify(result))
 	return credentials.Value{
 		AccessKeyID:     *result.Credentials.AccessKeyId,
 		SecretAccessKey: *result.Credentials.SecretAccessKey,
