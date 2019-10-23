@@ -1,8 +1,4 @@
 /.idea/
 /.vscode/
-/vendor/
 .DS_Store
 go.sum
-max_api
-dist
-file
