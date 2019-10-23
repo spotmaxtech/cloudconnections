@@ -3,6 +3,7 @@ package connections
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/S3"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/autoscaling/autoscalingiface"
 	"github.com/aws/aws-sdk-go/service/cloudformation"
@@ -19,6 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/elbv2/elbv2iface"
 	"github.com/aws/aws-sdk-go/service/pricing"
 	"github.com/aws/aws-sdk-go/service/pricing/pricingiface"
+	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
 
 type Connections struct {
@@ -31,6 +33,7 @@ type Connections struct {
 	CloudFormation cloudformationiface.CloudFormationAPI
 	CloudWatch     cloudwatchiface.CloudWatchAPI
 	Pricing        pricingiface.PricingAPI
+	S3             s3iface.S3API
 	Region         string
 }
 
@@ -71,6 +74,7 @@ func (c *Connections) Connect(region string) {
 	cloudFormationConn := make(chan *cloudformation.CloudFormation)
 	cloudWatchConn := make(chan *cloudwatch.CloudWatch)
 	pricingConn := make(chan *pricing.Pricing)
+	s3Conn := make(chan *s3.S3)
 
 	go func() { asConn <- autoscaling.New(c.Session) }()
 	go func() { ec2Conn <- ec2.New(c.Session) }()
@@ -80,7 +84,8 @@ func (c *Connections) Connect(region string) {
 	go func() { cloudFormationConn <- cloudformation.New(c.Session) }()
 	go func() { cloudWatchConn <- cloudwatch.New(c.Session) }()
 	go func() { pricingConn <- pricing.New(c.PricingSession()) }()
+	go func() { s3Conn <- s3.New(c.Session) }()
 
-	c.AutoScaling, c.EC2, c.ELB, c.ELBV2, c.CostExplorer, c.CloudFormation, c.CloudWatch, c.Pricing, c.Region =
-		<-asConn, <-ec2Conn, <-elbConn, <-elbv2Conn, <-costExplorerConn, <-cloudFormationConn, <-cloudWatchConn, <-pricingConn, region
+	c.AutoScaling, c.EC2, c.ELB, c.ELBV2, c.CostExplorer, c.CloudFormation, c.CloudWatch, c.Pricing, c.S3, c.Region =
+		<-asConn, <-ec2Conn, <-elbConn, <-elbv2Conn, <-costExplorerConn, <-cloudFormationConn, <-cloudWatchConn, <-pricingConn, <-s3Conn, region
 }
