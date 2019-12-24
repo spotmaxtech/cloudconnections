@@ -7,9 +7,9 @@ import (
 )
 
 type ConnectionsAli struct {
-	ecs *ecs.Client
-	ess *ess.Client
-	cs  *cs.Client
+	ECS *ecs.Client
+	ESS *ess.Client
+	CS  *cs.Client
 }
 
 func NewAli(region string, accessKeyId string, accessKeySecret string) *ConnectionsAli {
@@ -19,7 +19,7 @@ func NewAli(region string, accessKeyId string, accessKeySecret string) *Connecti
 }
 
 func (c *ConnectionsAli) ConnectAli(region string, accessKeyId string, accessKeySecret string) {
-	c.ecs, _ = ecs.NewClientWithAccessKey(region, accessKeyId, accessKeySecret)
-	c.ess, _ = ess.NewClientWithAccessKey(region, accessKeyId, accessKeySecret)
-	c.cs,_ = cs.NewClientWithAccessKey(region,accessKeyId,accessKeySecret)
+	c.ECS, _ = ecs.NewClientWithAccessKey(region, accessKeyId, accessKeySecret)
+	c.ESS, _ = ess.NewClientWithAccessKey(region, accessKeyId, accessKeySecret)
+	c.CS,_ = cs.NewClientWithAccessKey(region,accessKeyId,accessKeySecret)
 }
