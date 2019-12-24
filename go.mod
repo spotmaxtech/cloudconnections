@@ -3,6 +3,7 @@ module github.com/spotmaxtech/cloudconnections
 go 1.12
 
 require (
+	github.com/aliyun/alibaba-cloud-sdk-go v1.60.302
 	github.com/armon/go-metrics v0.0.0-20190430140413-ec5e00d3c878 // indirect
 	github.com/aws/aws-sdk-go v1.25.17
 	github.com/hashicorp/consul/api v1.2.0 // indirect
