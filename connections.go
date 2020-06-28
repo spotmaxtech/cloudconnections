@@ -2,6 +2,7 @@ package connections
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/autoscaling/autoscalingiface"
@@ -40,6 +41,16 @@ type Connections struct {
 func New(region string) *Connections {
 	conn := Connections{}
 	conn.Connect(region)
+	return &conn
+}
+
+func NewAWS(region string, accessKeyId string, secretAccessKey string) *Connections {
+	sess := session.Must(session.NewSession(&aws.Config{
+		Region:      aws.String(region),
+		Credentials: credentials.NewStaticCredentials(accessKeyId, secretAccessKey, ""),
+	}))
+	conn := Connections{Session: sess}
+	conn.Connect(*conn.Session.Config.Region)
 	return &conn
 }
 
