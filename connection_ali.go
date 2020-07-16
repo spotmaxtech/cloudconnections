@@ -5,6 +5,7 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ess"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ram"
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
 type ConnectionsAli struct {
@@ -12,6 +13,7 @@ type ConnectionsAli struct {
 	ESS *ess.Client
 	CS  *cs.Client
 	RAM *ram.Client
+	OSS *oss.Client
 }
 
 func NewAli(region string, accessKeyId string, accessKeySecret string) *ConnectionsAli {
@@ -25,4 +27,5 @@ func (c *ConnectionsAli) ConnectAli(region string, accessKeyId string, accessKey
 	c.ESS, _ = ess.NewClientWithAccessKey(region, accessKeyId, accessKeySecret)
 	c.CS,_ = cs.NewClientWithAccessKey(region,accessKeyId,accessKeySecret)
 	c.RAM,_ = ram.NewClientWithAccessKey(region, accessKeyId, accessKeySecret)
+	c.OSS,_ = oss.New(region, accessKeyId, accessKeySecret) //region --> endpoint
 }
