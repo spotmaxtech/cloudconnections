@@ -19,7 +19,6 @@ require (
 	github.com/olivere/elastic/v7 v7.0.8 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/spotmaxtech/gokit v1.0.1
-	golang.org/x/net v0.0.0-20191021144547-ec77196f6094 // indirect
-	golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e // indirect
 )
