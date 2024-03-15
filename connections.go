@@ -22,6 +22,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
 	"github.com/aws/aws-sdk-go/service/pricing"
 	"github.com/aws/aws-sdk-go/service/pricing/pricingiface"
+	"github.com/aws/aws-sdk-go/service/route53"
+	"github.com/aws/aws-sdk-go/service/route53/route53iface"
 )
 
 type Connections struct {
@@ -36,6 +38,7 @@ type Connections struct {
 	Pricing        pricingiface.PricingAPI
 	Region         string
 	IAM            iamiface.IAMAPI
+	Route53        route53iface.Route53API
 }
 
 func New(region string) *Connections {
@@ -86,6 +89,7 @@ func (c *Connections) Connect(region string) {
 	cloudWatchConn := make(chan *cloudwatch.CloudWatch)
 	pricingConn := make(chan *pricing.Pricing)
 	iamConn := make(chan *iam.IAM)
+	route53Conn := make(chan *route53.Route53)
 
 	go func() { asConn <- autoscaling.New(c.Session) }()
 	go func() { ec2Conn <- ec2.New(c.Session) }()
@@ -96,7 +100,8 @@ func (c *Connections) Connect(region string) {
 	go func() { cloudWatchConn <- cloudwatch.New(c.Session) }()
 	go func() { pricingConn <- pricing.New(c.PricingSession()) }()
 	go func() { iamConn <- iam.New(c.Session) }()
+	go func() { route53Conn <- route53.New(c.Session) }()
 
-	c.AutoScaling, c.EC2, c.ELB, c.ELBV2, c.CostExplorer, c.CloudFormation, c.CloudWatch, c.Pricing, c.Region, c.IAM =
-		<-asConn, <-ec2Conn, <-elbConn, <-elbv2Conn, <-costExplorerConn, <-cloudFormationConn, <-cloudWatchConn, <-pricingConn, region, <-iamConn
+	c.AutoScaling, c.EC2, c.ELB, c.ELBV2, c.CostExplorer, c.CloudFormation, c.CloudWatch, c.Pricing, c.Region, c.IAM, c.Route53 =
+		<-asConn, <-ec2Conn, <-elbConn, <-elbv2Conn, <-costExplorerConn, <-cloudFormationConn, <-cloudWatchConn, <-pricingConn, region, <-iamConn, <-route53Conn
 }
